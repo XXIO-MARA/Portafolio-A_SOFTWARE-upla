@@ -49,7 +49,7 @@ public class App {
                 uploadDir.mkdirs();
             }
             // Sincronización estricta: Flor Xiomara Medina Salazar como Alumna Titular
-            Usuario admin = uRepo.findByCodigo("ADMIN2026").orElse(new Usuario("ADMIN2026", "Flor Xiomara Medina Salazar", "s01269h@upla.edu.pe", 1));
+            Usuario admin = uRepo.findByCodigo("ADMIN949163067").orElse(new Usuario("ADMIN949163067", "Flor Xiomara Medina Salazar", "s01269h@upla.edu.pe", 1));
             admin.setNombre("Flor Xiomara Medina Salazar");
             admin.setCorreo("s01269h@upla.edu.pe");
             admin.setRolId(1);
