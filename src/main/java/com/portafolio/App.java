@@ -44,10 +44,10 @@ public class App {
     @Bean
     public CommandLineRunner initData(UsuarioRepository uRepo) {
         return args -> {
-            File uploadDir = new File("uploads");
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
+            try {
+                Files.createDirectories(rootLocation);
+            } catch (Exception ignored) {}
+
             // Sincronización estricta: Flor Xiomara Medina Salazar como Alumna Titular
             Usuario admin = uRepo.findByCodigo("ADMIN949163067").orElse(new Usuario("ADMIN949163067", "Flor Xiomara Medina Salazar", "s01269h@upla.edu.pe", 1));
             admin.setNombre("Flor Xiomara Medina Salazar");
@@ -63,7 +63,7 @@ public class App {
     }
 
     // ==========================================================
-    // 1. PANTALLA DE ACCESO PRIVADO (ALTA SEGURIDAD)
+    // 1. PANTALLA DE ACCESO PRIVADO
     // ==========================================================
 
     @GetMapping("/")
@@ -123,7 +123,7 @@ public class App {
         "      <h1>ARQUITECTURA DE SOFTWARE</h1>" +
         "      <p>Facultad de Ingeniería • EPISC 2026-I</p>" +
         "    </div>" +
-        (error != null ? "    <div class='error-box'>⚠️ ACCESO DENEGADO // CLAVE NO REGISTRADA EN MYSQL</div>" : "") +
+        (error != null ? "    <div class='error-box'>⚠️ ACCESO DENEGADO // CLAVE NO REGISTRADA EN EL SISTEMA</div>" : "") +
         "    <form action='/login' method='POST'>" +
         "      <div class='input-group'>" +
         "        <span class='input-prefix'>&gt;_</span>" +
@@ -133,11 +133,11 @@ public class App {
         "    </form>" +
         "    <div class='lock-box'>" +
         "      🔒 <b>PORTAFOLIO DE ACCESO PRIVADO</b><br>" +
-        "      <span style='color:#a892cb;'>Autenticación segura vinculada a MySQL 8.0</span>" +
+        "      <span style='color:#a892cb;'>Autenticación segura vinculada a Base de Datos</span>" +
         "    </div>" +
         "    <div class='telemetry'>" +
-        "      <span>TABLAS RELACIONALES ACTIVAS</span>" +
-        "      <span style='color:#00ff88;'>● MYSQL 8.0 ONLINE</span>" +
+        "      <span>SISTEMA DE PERSISTENCIA ACTIVO</span>" +
+        "      <span style='color:#00ff88;'>● SERVIDOR ONLINE</span>" +
         "    </div>" +
         "  </div>" +
         "</div>" +
@@ -226,7 +226,7 @@ public class App {
     }
 
     // ==========================================================
-    // 2. DASHBOARD CÓSMICO EXTRAVAGANTE (CON TOP HUD & DOCENTE MEJORADOS)
+    // 2. DASHBOARD CÓSMICO
     // ==========================================================
 
     @GetMapping("/portafolio")
@@ -282,11 +282,9 @@ public class App {
         sb.append("body { background:#05020c; color:#f5edff; font-family:'Plus Jakarta Sans',sans-serif; min-height:100vh; position:relative; overflow-x:hidden; }");
         sb.append("canvas#bgCanvas { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }");
 
-        // Tipografías Neón
         sb.append(".neon-title { font-weight:900; background:linear-gradient(135deg, #ffffff 0%, #ff80df 30%, #d884ff 65%, #00f3ff 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 15px rgba(216,132,255,0.75)); }");
         sb.append(".neon-sub { font-family:'Fira Code',monospace; color:#00f3ff; letter-spacing:1.5px; font-weight:700; text-shadow:0 0 10px rgba(0,243,255,0.6); }");
 
-        // Luz de Meteorito en Movimiento Continuo (Barrido Láser)
         sb.append(".meteor-glow-title { background:linear-gradient(90deg, #fff 0%, #00f3ff 25%, #ff007f 50%, #d884ff 75%, #fff 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:meteorSweep 4.5s linear infinite; font-weight:900; filter:drop-shadow(0 0 20px rgba(216,132,255,0.8)); }");
         sb.append("@keyframes meteorSweep { 0% { background-position:0% center; } 100% { background-position:200% center; } }");
 
@@ -299,7 +297,7 @@ public class App {
         sb.append(".loader-status { font-family:'Fira Code',monospace; font-size:11.5px; color:#00f3ff; letter-spacing:1px; margin-top:14px; font-weight:700; }");
         sb.append(".loader-welcome { display:none; font-size:19px; font-weight:900; color:#fff; text-shadow:0 0 22px #ff007f; margin-top:16px; }");
 
-        // Top HUD Extraordinario (Barra superior de cristal galáctico)
+        // Top HUD
         sb.append(".hud-top { background:rgba(12,4,26,0.95); backdrop-filter:blur(25px); border-bottom:2px solid transparent; border-image:linear-gradient(90deg, #ff007f, #d884ff, #00f3ff, #ff007f) 1; padding:16px 36px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 8px 45px rgba(0,0,0,0.9), 0 0 25px rgba(216,132,255,0.15); }");
         sb.append(".hud-left { display:flex; align-items:center; gap:16px; }");
         sb.append(".hud-logo { height:56px; filter:drop-shadow(0 0 18px rgba(0,243,255,0.9)); transition:0.3s; }");
@@ -318,7 +316,7 @@ public class App {
 
         sb.append(".alert-top { background:rgba(0,243,255,0.14); border-bottom:1px solid #00f3ff; color:#00f3ff; padding:11px 20px; font-family:'Fira Code',monospace; font-size:12px; text-align:center; box-shadow:0 0 18px rgba(0,243,255,0.25); position:relative; z-index:900; }");
 
-        // Barra de 3 Pestañas
+        // Pestañas
         sb.append(".tabs-bar { display:flex; justify-content:center; gap:16px; margin:26px 0 20px; position:relative; z-index:10; flex-wrap:wrap; padding:0 15px; }");
         sb.append(".tab-link { padding:14px 28px; border-radius:16px; text-decoration:none; font-weight:800; font-size:12.5px; letter-spacing:1px; text-transform:uppercase; transition:0.3s; font-family:'Fira Code',monospace; display:inline-flex; align-items:center; gap:8px; }");
         sb.append(".tab-active { background:linear-gradient(135deg, #d884ff 0%, #ff007f 100%); color:#fff; box-shadow:0 0 32px rgba(216,132,255,0.75); transform:scale(1.02); }");
@@ -327,7 +325,7 @@ public class App {
 
         sb.append(".main-content { max-width:1320px; margin:0 auto; padding:15px 20px 95px; position:relative; z-index:10; }");
 
-        // BANNER HERO CON ESCUDO FLOTANTE 3D
+        // HERO SHOWCASE CON ESCUDO FLOTANTE 3D
         sb.append(".hero-showcase { background:linear-gradient(135deg, rgba(20,7,42,0.92) 0%, rgba(10,3,24,0.95) 100%); border:1.8px solid rgba(0,243,255,0.45); border-radius:28px; padding:38px 42px; margin-bottom:32px; box-shadow:0 0 50px rgba(0,243,255,0.2), 0 20px 60px rgba(0,0,0,0.8); display:grid; grid-template-columns:1fr auto; gap:36px; align-items:center; position:relative; overflow:hidden; }");
         sb.append(".hero-showcase::before { content:''; position:absolute; top:-40%; right:-10%; width:320px; height:320px; background:radial-gradient(circle, rgba(255,0,127,0.22), transparent 70%); filter:blur(40px); pointer-events:none; }");
         sb.append(".hero-left-content { position:relative; z-index:2; }");
@@ -335,7 +333,6 @@ public class App {
         sb.append(".hero-tag-item { background:rgba(255,255,255,0.04); border:1px solid rgba(216,132,255,0.28); border-radius:10px; padding:6px 14px; font-family:'Fira Code',monospace; font-size:11.5px; color:#cbd5e1; display:flex; align-items:center; gap:6px; }");
         sb.append(".hero-tag-item b { color:#00f3ff; }");
         
-        // Escudo 3D Flotante UPLA
         sb.append(".upla-3d-box { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; }");
         sb.append(".upla-3d-shield { width:140px; height:140px; border-radius:28px; background:linear-gradient(135deg, rgba(0,243,255,0.3), rgba(255,0,127,0.3)); padding:4px; box-shadow:0 0 45px rgba(0,243,255,0.45), 0 15px 35px rgba(0,0,0,0.8); animation:shieldFloat 4s ease-in-out infinite; }");
         sb.append("@keyframes shieldFloat { 0%, 100% { transform:translateY(0px) rotate(0deg); } 50% { transform:translateY(-8px) rotate(1.5deg); } }");
@@ -343,12 +340,11 @@ public class App {
         sb.append(".upla-3d-inner img { width:80%; height:80%; object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,243,255,0.85)); }");
         sb.append(".upla-3d-caption { margin-top:10px; font-family:'Fira Code',monospace; font-size:11px; font-weight:800; color:#38bdf8; letter-spacing:1px; text-shadow:0 0 8px #00f3ff; }");
 
-        // Tarjetas y Diseño General
+        // Tarjetas
         sb.append(".dossier-grid { display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-bottom:32px; }");
         sb.append(".cyber-card { background:rgba(18,6,36,0.86); border:1.5px solid rgba(216,132,255,0.38); border-radius:26px; padding:32px; backdrop-filter:blur(25px); box-shadow:0 15px 45px rgba(0,0,0,0.65); position:relative; overflow:hidden; }");
         sb.append(".cyber-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, #00f3ff, #d884ff, #ff007f); }");
         
-        // Estilos de la Tarjeta del Docente Elevada
         sb.append(".docente-card-pro { background:linear-gradient(135deg, rgba(24,8,48,0.92) 0%, rgba(12,4,30,0.95) 100%); border-color:rgba(168,85,247,0.55); box-shadow:0 0 40px rgba(168,85,247,0.22), 0 15px 45px rgba(0,0,0,0.7); }");
         sb.append(".docente-header { display:flex; gap:20px; align-items:center; margin-bottom:22px; }");
         sb.append(".docente-avatar-frame { width:95px; height:95px; border-radius:24px; border:2.5px solid #a855f7; background:radial-gradient(circle, #2e0854 0%, #100220 100%); display:flex; align-items:center; justify-content:center; font-size:42px; box-shadow:0 0 35px rgba(168,85,247,0.6); position:relative; flex-shrink:0; }");
@@ -357,7 +353,7 @@ public class App {
         sb.append(".btn-docente-mail { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg, rgba(168,85,247,0.25), rgba(0,243,255,0.25)); border:1.5px solid #a855f7; color:#fff; padding:10px 20px; border-radius:12px; font-family:'Fira Code',monospace; font-size:11.5px; font-weight:800; text-decoration:none; transition:0.3s; margin-top:6px; }");
         sb.append(".btn-docente-mail:hover { background:#a855f7; color:#fff; box-shadow:0 0 25px #a855f7; transform:translateY(-1px); }");
 
-        // Alumna Header
+        // Alumna
         sb.append(".student-header { display:flex; gap:22px; align-items:center; margin-bottom:22px; }");
         sb.append(".avatar-frame { width:95px; height:95px; border-radius:24px; border:2.5px solid #ff007f; background:radial-gradient(circle, #381266 0%, #150529 100%); display:flex; align-items:center; justify-content:center; font-size:42px; box-shadow:0 0 35px rgba(255,0,127,0.6); position:relative; flex-shrink:0; }");
         sb.append(".chip-badge { position:absolute; bottom:-6px; right:-6px; background:#ff007f; color:#fff; font-size:9.5px; font-family:'Fira Code',monospace; padding:3px 9px; border-radius:12px; font-weight:900; box-shadow:0 0 10px #ff007f; }");
@@ -382,7 +378,7 @@ public class App {
         sb.append(".reactor-bar { height:7px; background:rgba(255,255,255,0.08); border-radius:10px; overflow:hidden; margin-bottom:9px; }");
         sb.append(".reactor-fill { height:100%; border-radius:10px; }");
 
-        // Dropzone & Consola
+        // Formulario y Dropzone
         sb.append(".upload-console { background:rgba(20,7,40,0.88); border:1.5px solid rgba(216,132,255,0.4); border-radius:26px; padding:30px; margin-bottom:32px; backdrop-filter:blur(25px); box-shadow:0 12px 45px rgba(0,0,0,0.55); }");
         sb.append(".console-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid rgba(216,132,255,0.25); padding-bottom:12px; }");
         sb.append(".console-title { font-size:16.5px; font-weight:900; color:#fff; }");
@@ -424,7 +420,7 @@ public class App {
         sb.append(".week-dual-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; }");
         sb.append(".compartment { background:rgba(255,255,255,0.025); border:1px solid rgba(216,132,255,0.22); border-radius:18px; padding:22px; }");
         sb.append(".compartment-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.07); }");
-        sb.append(".comp-title { font-size:14px; font-weight:900; display:flex; align-items:gap:8px; }");
+        sb.append(".comp-title { font-size:14px; font-weight:900; display:flex; align-items:center; gap:8px; }");
         sb.append(".comp-mat { color:#00f3ff; text-shadow:0 0 10px rgba(0,243,255,0.4); }");
         sb.append(".comp-tar { color:#ff007f; text-shadow:0 0 10px rgba(255,0,127,0.4); }");
 
@@ -442,7 +438,7 @@ public class App {
 
         sb.append(".empty-slot { padding:28px; text-align:center; border:1.5px dashed rgba(216,132,255,0.2); border-radius:16px; color:#957eb5; font-family:'Fira Code',monospace; font-size:12px; }");
 
-        // Carnet Estudiantil Digital y Enlaces Académicos
+        // Carnet Estudiantil
         sb.append(".contact-hub-grid { display:grid; grid-template-columns:1.2fr 1.3fr; gap:26px; margin-top:12px; }");
         sb.append(".student-id-card { background:linear-gradient(135deg, rgba(28,9,56,0.95) 0%, rgba(14,4,30,0.95) 100%); border:2px solid #ff007f; border-radius:24px; padding:28px; position:relative; overflow:hidden; box-shadow:0 0 50px rgba(255,0,127,0.35); }");
         sb.append(".student-id-card::before { content:''; position:absolute; inset:0; background:linear-gradient(125deg, transparent 30%, rgba(216,132,255,0.15) 45%, rgba(0,243,255,0.15) 55%, transparent 70%); pointer-events:none; animation:hologramScan 6s infinite linear; }");
@@ -461,7 +457,6 @@ public class App {
         sb.append(".id-spec { font-family:'Fira Code',monospace; font-size:11.5px; color:#00f3ff; margin-bottom:8px; font-weight:700; }");
         sb.append(".id-code { font-family:'Fira Code',monospace; font-size:11px; color:#d8bbf7; background:rgba(255,255,255,0.04); padding:4px 8px; border-radius:6px; display:inline-block; }");
         
-        // Sello Criptográfico Digital UPLA (Sin falso QR ni código de barras)
         sb.append(".digital-cert-seal { background:rgba(0,243,255,0.08); border:1.5px solid #00f3ff; border-radius:14px; padding:14px; margin-top:16px; text-align:center; box-shadow:0 0 20px rgba(0,243,255,0.25); }");
 
         sb.append(".contact-links-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }");
@@ -481,75 +476,44 @@ public class App {
         sb.append(".modal-title { font-size:16px; font-weight:900; color:#00f3ff; font-family:'Fira Code',monospace; }");
         sb.append(".modal-close { background:rgba(255,0,80,0.2); border:1px solid #ff0055; color:#ff6688; padding:7px 14px; border-radius:9px; cursor:pointer; font-weight:800; font-size:12.5px; }");
 
-        // Responsivo Celular y Laptop
+        // Responsivo
         sb.append("@media (max-width: 900px) {");
         sb.append("  .hud-top { flex-direction: column; gap: 12px; padding: 14px 16px; }");
         sb.append("  .hud-left { flex-direction: column; text-align: center; gap: 8px; }");
         sb.append("  .telemetry-hud { flex-wrap: wrap; justify-content: center; gap: 8px; width: 100%; }");
-        sb.append("  .hud-stat, .user-badge-admin, .user-badge-est, .btn-exit { font-size: 10px; padding: 6px 10px; }");
         sb.append("  .hero-showcase { grid-template-columns: 1fr; text-align: center; padding: 24px 20px; }");
-        sb.append("  .hero-tags-row { justify-content: center; }");
-        sb.append("  .upla-3d-box { margin-top: 15px; }");
         sb.append("  .tabs-bar { flex-direction: column; padding: 0 10px; gap: 8px; }");
-        sb.append("  .tab-link { justify-content: center; font-size: 11px; padding: 12px; }");
         sb.append("  .dossier-grid, .units-grid, .week-dual-grid, .contact-hub-grid, .form-grid, .contact-links-grid, .docente-spec-grid { grid-template-columns: 1fr !important; }");
-        sb.append("  .student-header, .docente-header { flex-direction: column; text-align: center; }");
-        sb.append("  .meta-list { grid-template-columns: 1fr; }");
-        sb.append("  .type-selector { flex-direction: column; }");
-        sb.append("  .week-card-header { flex-direction: column; align-items: flex-start; }");
         sb.append("  .carousel-nav { flex-direction: column; gap: 8px; }");
         sb.append("  .nav-arrow-btn { width: 100%; text-align: center; }");
         sb.append("  .main-content { padding: 15px 12px 100px; }");
-        sb.append("  .cyber-card, .upload-console, .week-card, .student-id-card { padding: 22px 18px; border-radius: 20px; }");
-        sb.append("  .id-body { flex-direction: column; text-align: center; }");
         sb.append("  #michiWindow { width: calc(100% - 30px) !important; right: 15px !important; bottom: 95px !important; }");
-        sb.append("  #cyberCatContainer { bottom: 18px; right: 18px; }");
         sb.append("}");
 
-        // ==========================================================
-        // ANIMALITO COMPLETO: MICHI 🐱🐾
-        // ==========================================================
-        sb.append("#cyberCatContainer { position:fixed; bottom:25px; right:25px; z-index:99998; cursor:pointer; display:flex; flex-direction:column; align-items:center; transition:transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }");
+        // Animalito Michi
+        sb.append("#cyberCatContainer { position:fixed; bottom:25px; right:25px; z-index:99998; cursor:pointer; display:flex; flex-direction:column; align-items:center; transition:transform 0.3s; }");
         sb.append("#cyberCatContainer:hover { transform:scale(1.12) translateY(-6px); }");
         sb.append(".cat-bubble { background:rgba(18,6,36,0.94); border:1.5px solid #00f3ff; color:#00f3ff; font-family:'Fira Code',monospace; font-size:10.5px; font-weight:800; padding:5px 12px; border-radius:14px; margin-bottom:8px; box-shadow:0 0 16px rgba(0,243,255,0.45); animation:bubbleBounce 2s ease-in-out infinite alternate; pointer-events:none; white-space:nowrap; }");
         sb.append("@keyframes bubbleBounce { from { transform:translateY(0); } to { transform:translateY(-5px); } }");
-        
-        sb.append(".cat-sprite { width:90px; height:80px; filter:drop-shadow(0 0 15px rgba(255,0,127,0.7)) drop-shadow(0 0 25px rgba(216,132,255,0.4)); animation:catHover 2.5s ease-in-out infinite alternate; }");
-        sb.append("@keyframes catHover { 0% { transform:translateY(0px) rotate(-2deg); } 50% { transform:translateY(-8px) rotate(2deg); } 100% { transform:translateY(0px) rotate(-2deg); } }");
-        
-        sb.append(".cat-tail { transform-origin: 30px 60px; animation: tailWag 1.8s ease-in-out infinite alternate; }");
-        sb.append("@keyframes tailWag { 0% { transform: rotate(-15deg); } 100% { transform: rotate(20deg); } }");
-        
-        sb.append(".cat-ear-left { transform-origin: 35px 25px; animation: earTwitch 3.5s ease-in-out infinite; }");
-        sb.append(".cat-ear-right { transform-origin: 65px 25px; animation: earTwitch 3.5s ease-in-out infinite 0.3s; }");
-        sb.append("@keyframes earTwitch { 0%, 90%, 100% { transform: rotate(0deg); } 93% { transform: rotate(-10deg); } 96% { transform: rotate(8deg); } }");
-        
-        sb.append(".cat-paw-front { animation: pawStep 1.2s ease-in-out infinite alternate; }");
-        sb.append(".cat-paw-back { animation: pawStep 1.2s ease-in-out infinite alternate-reverse; }");
-        sb.append("@keyframes pawStep { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }");
-        
-        sb.append(".cat-eye { animation: catBlink 4s infinite; transform-origin: center; }");
-        sb.append("@keyframes catBlink { 0%, 95%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.1); } }");
+        sb.append(".cat-sprite { width:90px; height:80px; filter:drop-shadow(0 0 15px rgba(255,0,127,0.7)); }");
 
-        // Ventana de Chat de MICHI
-        sb.append("#michiWindow { position:fixed; bottom:95px; right:25px; width:410px; max-height:580px; height:80vh; background:rgba(18,6,36,0.96); border:1.5px solid #d884ff; border-radius:24px; box-shadow:0 15px 60px rgba(0,0,0,0.85), 0 0 40px rgba(216,132,255,0.35); backdrop-filter:blur(25px); z-index:99999; display:none; flex-direction:column; overflow:hidden; }");
+        // Ventana Michi
+        sb.append("#michiWindow { position:fixed; bottom:95px; right:25px; width:410px; max-height:580px; height:80vh; background:rgba(18,6,36,0.96); border:1.5px solid #d884ff; border-radius:24px; box-shadow:0 15px 60px rgba(0,0,0,0.85); backdrop-filter:blur(25px); z-index:99999; display:none; flex-direction:column; overflow:hidden; }");
         sb.append(".michi-head { background:rgba(30,10,60,0.85); border-bottom:1px solid rgba(216,132,255,0.25); padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }");
-        sb.append(".michi-title { font-size:13.5px; font-weight:900; color:#00f3ff; font-family:'Fira Code',monospace; display:flex; align-items:center; gap:8px; }");
-        sb.append(".michi-body { flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; scrollbar-width:thin; }");
-        sb.append(".michi-msg { max-width:88%; padding:11px 15px; border-radius:14px; font-size:12.5px; line-height:1.5; font-family:'Plus Jakarta Sans',sans-serif; }");
-        sb.append(".msg-bot { background:rgba(216,132,255,0.14); border:1px solid rgba(216,132,255,0.32); color:#f5edff; align-self:flex-start; border-bottom-left-radius:3px; }");
-        sb.append(".msg-user { background:linear-gradient(135deg, #d884ff, #ff007f); color:#fff; align-self:flex-end; border-bottom-right-radius:3px; font-weight:700; }");
-        sb.append(".michi-chips { display:flex; gap:6px; overflow-x:auto; padding:8px 12px; border-top:1px solid rgba(255,255,255,0.06); scrollbar-width:none; }");
-        sb.append(".m-chip { background:rgba(255,255,255,0.04); border:1px solid rgba(216,132,255,0.25); padding:5px 10px; border-radius:12px; font-size:10px; font-family:'Fira Code',monospace; color:#d884ff; cursor:pointer; white-space:nowrap; transition:0.2s; }");
-        sb.append(".m-chip:hover { border-color:#00f3ff; color:#00f3ff; background:rgba(0,243,255,0.1); }");
+        sb.append(".michi-title { font-size:13.5px; font-weight:900; color:#00f3ff; font-family:'Fira Code',monospace; }");
+        sb.append(".michi-body { flex:1; padding:15px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; }");
+        sb.append(".michi-msg { max-width:88%; padding:11px 15px; border-radius:14px; font-size:12.5px; line-height:1.5; }");
+        sb.append(".msg-bot { background:rgba(216,132,255,0.14); border:1px solid rgba(216,132,255,0.32); color:#f5edff; align-self:flex-start; }");
+        sb.append(".msg-user { background:linear-gradient(135deg, #d884ff, #ff007f); color:#fff; align-self:flex-end; font-weight:700; }");
+        sb.append(".michi-chips { display:flex; gap:6px; overflow-x:auto; padding:8px 12px; border-top:1px solid rgba(255,255,255,0.06); }");
+        sb.append(".m-chip { background:rgba(255,255,255,0.04); border:1px solid rgba(216,132,255,0.25); padding:5px 10px; border-radius:12px; font-size:10px; font-family:'Fira Code',monospace; color:#d884ff; cursor:pointer; white-space:nowrap; }");
+        sb.append(".m-chip:hover { border-color:#00f3ff; color:#00f3ff; }");
         sb.append(".michi-input-box { padding:10px 12px; border-top:1px solid rgba(216,132,255,0.22); display:flex; gap:8px; background:rgba(10,3,20,0.6); }");
-        sb.append(".michi-input { flex:1; background:rgba(28,10,56,0.85); border:1px solid rgba(216,132,255,0.3); border-radius:10px; padding:10px 12px; color:#fff; font-size:12px; outline:none; font-family:'Plus Jakarta Sans',sans-serif; }");
-        sb.append(".michi-send-btn { background:#ff007f; border:none; border-radius:10px; color:#fff; padding:0 14px; font-size:12px; cursor:pointer; font-weight:800; font-family:'Fira Code',monospace; transition:0.2s; }");
-        sb.append(".michi-send-btn:hover { background:#00f3ff; color:#070210; }");
+        sb.append(".michi-input { flex:1; background:rgba(28,10,56,0.85); border:1px solid rgba(216,132,255,0.3); border-radius:10px; padding:10px 12px; color:#fff; font-size:12px; outline:none; }");
+        sb.append(".michi-send-btn { background:#ff007f; border:none; border-radius:10px; color:#fff; padding:0 14px; font-size:12px; cursor:pointer; font-weight:800; }");
 
         sb.append("</style></head><body>");
 
-        // Lienzo Cósmico con Meteoritos y Estrellas Fugaces
         sb.append("<canvas id='bgCanvas'></canvas>");
 
         // Loader 1-100%
@@ -570,9 +534,7 @@ public class App {
             sb.append("</div>");
         }
 
-        // =======================================================
-        // 1. TOP HUD EXTRAORDINARIO Y EXTRAVAGANTE
-        // =======================================================
+        // TOP HUD
         sb.append("<header class='hud-top'>");
         sb.append("  <div class='hud-left'>");
         sb.append("    <img src='/image.png' alt='Logo UPLA' class='hud-logo' onerror=\"this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Logo_Universidad_Peruana_Los_Andes.png/640px-Logo_Universidad_Peruana_Los_Andes.png'\">");
@@ -582,9 +544,9 @@ public class App {
         sb.append("    </div>");
         sb.append("  </div>");
         sb.append("  <div class='telemetry-hud'>");
-        sb.append("    <div class='hud-stat'><span class='pulse-green'></span> MYSQL 8.0: <b>").append(todasLasClases.size()).append(" CLASES PERSISTIDAS</b></div>");
-        sb.append("    <div class='hud-stat'>DOCUMENTOS: <b>").append(todosLosArchivos.size()).append(" EN BD</b></div>");
-        sb.append("    <div class='hud-stat'>PUERTO: <b>8080</b></div>");
+        sb.append("    <div class='hud-stat'><span class='pulse-green'></span> CLASES EN BD: <b>").append(todasLasClases.size()).append("</b></div>");
+        sb.append("    <div class='hud-stat'>DOCUMENTOS: <b>").append(todosLosArchivos.size()).append("</b></div>");
+        sb.append("    <div class='hud-stat'>PORT: <b>8080</b></div>");
         if (esAdmin) {
             sb.append("    <span class='user-badge-admin'>🌸 ALUMNA TITULAR: ").append(nombreAlumna).append("</span>");
         } else {
@@ -594,18 +556,18 @@ public class App {
         sb.append("  </div>");
         sb.append("</header>");
 
-        // Alertas
+        // Notificaciones
         if ("upload_ok".equals(msg)) {
-            sb.append("<div class='alert-top'>✓ TRANSACCIÓN MYSQL EXITOSA: Documento clasificado y vinculado correctamente en la base de datos.</div>");
+            sb.append("<div class='alert-top'>✓ DOCUMENTO PUBLICADO CON ÉXITO Y REGISTRADO EN EL PORTAFOLIO.</div>");
         } else if ("del_ok".equals(msg)) {
-            sb.append("<div class='alert-top' style='border-color:#ff0055; color:#ff6688; background:rgba(255,0,80,0.15);'>✓ REGISTRO ELIMINADO: Fila retirada de MySQL y archivo desvinculado del servidor.</div>");
+            sb.append("<div class='alert-top' style='border-color:#ff0055; color:#ff6688; background:rgba(255,0,80,0.15);'>✓ REGISTRO Y ARCHIVO ELIMINADOS CORRECTAMENTE.</div>");
         } else if ("perfil_actualizado".equals(msg)) {
-            sb.append("<div class='alert-top'>✓ PERFIL ACTUALIZADO: Nombre sincronizado en la base de datos MySQL.</div>");
+            sb.append("<div class='alert-top'>✓ PERFIL DE ALUMNA ACTUALIZADO CORRECTAMENTE.</div>");
         } else if ("msg_enviado".equals(msg)) {
-            sb.append("<div class='alert-top' style='border-color:#00ff88; color:#00ff88; background:rgba(0,255,136,0.12);'>✓ MENSAJE TRANSMITIDO: Su consulta ha sido enviada al correo de Flor Xiomara.</div>");
+            sb.append("<div class='alert-top' style='border-color:#00ff88; color:#00ff88; background:rgba(0,255,136,0.12);'>✓ MENSAJE ENVIADO AL BUZÓN INSTITUCIONAL DE FLOR XIOMARA.</div>");
         }
 
-        // Pestañas Principales
+        // Pestañas
         sb.append("<div class='tabs-bar'>");
         sb.append("  <a href='/portafolio?tab=presentacion' class='tab-link ").append("presentacion".equals(activeTab) ? "tab-active" : "tab-inactive").append("'>🌸 01. Presentación de la Estudiante</a>");
         sb.append("  <a href='/portafolio?tab=archivos' class='tab-link ").append("archivos".equals(activeTab) ? "tab-active" : "tab-inactive").append("'>📂 02. Portafolio Semanal & Tareas</a>");
@@ -615,16 +577,14 @@ public class App {
         sb.append("<main class='main-content'>");
 
         // =======================================================
-        // TAB 01: PRESENTACIÓN DE LA ESTUDIANTE & CÁTEDRA
+        // TAB 01: PRESENTACIÓN
         // =======================================================
         if ("presentacion".equals(activeTab)) {
-
-            // 2. HERO SHOWCASE EXTRAVAGANTE CON ESCUDO FLOTANTE 3D UPLA
             sb.append("<section class='hero-showcase'>");
             sb.append("  <div class='hero-left-content'>");
             sb.append("    <span class='neon-sub'>// PORTAFOLIO ACADÉMICO DIGITAL OFICIAL</span>");
             sb.append("    <h1 class='meteor-glow-title' style='font-size:32px; margin:10px 0 8px;'>ARQUITECTURA DE SOFTWARE 2026-I</h1>");
-            sb.append("    <p style='color:#cbd5e1; font-size:13.5px; line-height:1.65; max-width:820px;'>Evidencias de aprendizaje, requerimientos de calidad (ISO/IEC 25010), modelos de 4+1 vistas, diseño por capas, APIs RESTful en Spring Boot y persistencia relacional en MySQL 8.0.</p>");
+            sb.append("    <p style='color:#cbd5e1; font-size:13.5px; line-height:1.65; max-width:820px;'>Evidencias de aprendizaje, requerimientos de calidad (ISO/IEC 25010), modelos de 4+1 vistas, diseño por capas, APIs RESTful en Spring Boot y persistencia de datos.</p>");
             sb.append("    <div class='hero-tags-row'>");
             sb.append("      <div class='hero-tag-item'>🏛️ Código: <b>332181</b></div>");
             sb.append("      <div class='hero-tag-item'>📋 Plan: <b>2022</b></div>");
@@ -635,7 +595,6 @@ public class App {
             sb.append("    </div>");
             sb.append("  </div>");
 
-            // Escudo 3D Flotante UPLA
             sb.append("  <div class='upla-3d-box'>");
             sb.append("    <div class='upla-3d-shield'>");
             sb.append("      <div class='upla-3d-inner'>");
@@ -648,7 +607,7 @@ public class App {
 
             sb.append("<div class='dossier-grid'>");
 
-            // Credencial de la Alumna Titular (Flor Xiomara Medina Salazar)
+            // Alumna Titular
             sb.append("  <div class='cyber-card'>");
             sb.append("    <div class='student-header'>");
             sb.append("      <div class='avatar-frame'>🌸<div class='chip-badge'>AUTORA</div></div>");
@@ -673,7 +632,7 @@ public class App {
             }
             sb.append("  </div>");
 
-            // 3. FICHA DE CÁTEDRA DEL DOCENTE ELEVADA Y DE ALTO PRESTIGIO
+            // Docente
             sb.append("  <div class='cyber-card docente-card-pro'>");
             sb.append("    <div class='docente-header'>");
             sb.append("      <div class='docente-avatar-frame'>👨‍🏫<div class='chip-badge' style='background:#a855f7; box-shadow:0 0 10px #a855f7;'>CÁTEDRA</div></div>");
@@ -716,7 +675,7 @@ public class App {
 
             sb.append("</div>");
 
-            // Sumilla Oficial y Logro de Aprendizaje del Sílabo
+            // Sumilla
             sb.append("<div class='cyber-card' style='margin-bottom:26px;'>");
             sb.append("  <span class='neon-sub'>// SÍLABO OFICIAL UPLA • PLAN 2022</span>");
             sb.append("  <h2 class='neon-title' style='font-size:22px; margin:6px 0 16px;'>Sumilla y Competencia General</h2>");
@@ -727,12 +686,12 @@ public class App {
             sb.append("    </div>");
             sb.append("    <div style='background:rgba(255,255,255,0.025); border:1px solid rgba(216,132,255,0.2); border-radius:16px; padding:20px;'>");
             sb.append("      <h4 style='color:#00f3ff; font-family:\"Fira Code\",monospace; font-size:12px; margin-bottom:8px;'>🎯 COMPETENCIA & LOGRO GENERAL</h4>");
-            sb.append("      <p style='font-size:12.5px; line-height:1.65; color:#d2bdef;'>Diseña, evalúa e implementa arquitecturas de software robustas, escalables y seguras utilizando POO, modelos 4+1 vistas de Kruchten, persistencia relacional en MySQL 8.0 y despliegues empresariales para resolver problemas tecnológicos contextualizados.</p>");
+            sb.append("      <p style='font-size:12.5px; line-height:1.65; color:#d2bdef;'>Diseña, evalúa e implementa arquitecturas de software robustas, escalables y seguras utilizando POO, modelos 4+1 vistas de Kruchten, persistencia relacional y despliegues empresariales para resolver problemas tecnológicos contextualizados.</p>");
             sb.append("    </div>");
             sb.append("  </div>");
             sb.append("</div>");
 
-            // Las 4 Unidades Oficiales del Sílabo
+            // Unidades
             sb.append("<div class='cyber-card'>");
             sb.append("  <span class='neon-sub'>// PROGRAMACIÓN DE CAPACIDADES</span>");
             sb.append("  <h2 class='neon-title' style='font-size:22px; margin:6px 0 16px;'>Reactores de Avance Curricular (4 Unidades)</h2>");
@@ -771,22 +730,21 @@ public class App {
         }
 
         // =======================================================
-        // TAB 02: PORTAFOLIO SEMANAL & TAREAS (CARRUSEL 1-16 DINÁMICO)
+        // TAB 02: PORTAFOLIO SEMANAL & TAREAS
         // =======================================================
         if ("archivos".equals(activeTab)) {
 
             if (esAdmin) {
                 sb.append("<div class='upload-console'>");
                 sb.append("  <div class='console-header'>");
-                sb.append("    <div class='console-title'>➕ PUBLICAR MATERIAL O TAREA EN MYSQL</div>");
-                sb.append("    <span class='neon-sub'>// TRANSMISIÓN EN VIVO A BD MYSQL</span>");
+                sb.append("    <div class='console-title'>➕ PUBLICAR MATERIAL O TAREA</div>");
+                sb.append("    <span class='neon-sub'>// TRANSMISIÓN EN VIVO A BASE DE DATOS</span>");
                 sb.append("  </div>");
                 sb.append("  <form action='/clases/crear' method='POST' enctype='multipart/form-data'>");
                 sb.append("    <div class='form-grid'>");
                 sb.append("      <div>");
-                // AQUÍ: Campo de texto libre para que Flor escriba cualquier semana o texto sin restricciones fijas
                 sb.append("        <label style='font-size:11px; font-family:\"Fira Code\",monospace; color:#d884ff; display:block; margin-bottom:5px; font-weight:700;'>SEMANA ACADÉMICA (ESCRIBE EL N° O TEXTO):</label>");
-                sb.append("        <input type='text' name='semana' id='formSemanaInput' class='cyber-input' placeholder='Escribe la semana (Ej: 1, 2, 3 o Semana 1)' value='1' required>");
+                sb.append("        <input type='text' name='semana' id='formSemanaInput' class='cyber-input' placeholder='Ej: 1, 2, 3 o Semana 1' value='1' required>");
                 sb.append("      </div>");
                 sb.append("      <div>");
                 sb.append("        <label style='font-size:11px; font-family:\"Fira Code\",monospace; color:#d884ff; display:block; margin-bottom:5px; font-weight:700;'>TÍTULO DEL TEMA / TAREA SEGÚN EL DOCENTE:</label>");
@@ -809,17 +767,17 @@ public class App {
 
                 sb.append("    <div class='cyber-dropzone' onclick=\"document.getElementById('fileInput').click();\">");
                 sb.append("      <div class='dropzone-icon'>📤</div>");
-                sb.append("      <div class='dropzone-text' id='dropzoneText'>Haz clic aquí para seleccionar o arrastrar tu documento</div>");
-                sb.append("      <div class='dropzone-sub'>Formatos aceptados: PDF, Word (.docx), PowerPoint (.pptx), ZIP, Imágenes</div>");
+                sb.append("      <div class='dropzone-text' id='dropzoneText'>Haz clic aquí para seleccionar tu archivo</div>");
+                sb.append("      <div class='dropzone-sub'>Formatos aceptados: PDF, Word (.docx), PPTX, ZIP, EXE, Imágenes</div>");
                 sb.append("      <input type='file' id='fileInput' name='archivo' style='display:none;' onchange=\"document.getElementById('dropzoneText').innerText = '✓ Archivo preparado: ' + this.files[0].name;\" required>");
                 sb.append("    </div>");
 
-                sb.append("    <button type='submit' class='submit-btn'>💾 GUARDAR Y PERSISTIR EN MYSQL (TABLA CLASES)</button>");
+                sb.append("    <button type='submit' class='submit-btn'>💾 GUARDAR Y PUBLICAR EN EL PORTAFOLIO</button>");
                 sb.append("  </form>");
                 sb.append("</div>");
             }
 
-            // Controles del Carrusel 1-16
+            // Carrusel
             sb.append("<div class='carousel-nav'>");
             sb.append("  <button class='nav-arrow-btn' onclick='changeWeek(-1)'>◀ SEMANA ANTERIOR</button>");
             sb.append("  <span class='neon-sub' id='carouselStatus'>NAVEGANDO SEMANA 01 DE 16</span>");
@@ -832,14 +790,12 @@ public class App {
             }
             sb.append("</div>");
 
-            // Paneles de Semanas con doble compartimento y Títulos Adaptables
             for (int s = 1; s <= 16; s++) {
                 final int currentWeek = s;
                 List<Clase> clasesSemana = todasLasClases.stream()
                         .filter(c -> Objects.equals(c.getSemanaId(), currentWeek))
                         .collect(Collectors.toList());
 
-                // Si Flor subió un tema propio para esta semana, mostramos el tema que ella escribió!
                 String tituloSemana = (s <= temasSemanas.length) ? temasSemanas[s-1] : "Semana " + s;
                 if (!clasesSemana.isEmpty() && clasesSemana.get(0).getTitulo() != null && !clasesSemana.get(0).getTitulo().trim().isEmpty()) {
                     tituloSemana = clasesSemana.get(0).getTitulo();
@@ -855,7 +811,7 @@ public class App {
 
                 sb.append("  <div class='week-dual-grid'>");
 
-                // Compartimento 1: Material de Clase
+                // Compartimento 1: Material
                 sb.append("    <div class='compartment'>");
                 sb.append("      <div class='compartment-header'>");
                 sb.append("        <div class='comp-title comp-mat'>📚 Material Oficial de Clase</div>");
@@ -874,7 +830,7 @@ public class App {
                 }
 
                 if (matList.isEmpty()) {
-                    sb.append("      <div class='empty-slot'>📭 Sin material de clase registrado en MySQL</div>");
+                    sb.append("      <div class='empty-slot'>📭 Sin material de clase registrado</div>");
                 } else {
                     for (Clase c : matList) {
                         List<Archivo> archs = todosLosArchivos.stream()
@@ -892,7 +848,7 @@ public class App {
                             }
                         }
                         if (esAdmin) {
-                            sb.append("          <a href='/archivos/eliminar/").append(c.getId()).append("' class='btn-del' onclick=\"return confirm('¿Eliminar este material de MySQL?');\">🗑️</a>");
+                            sb.append("          <a href='/archivos/eliminar/").append(c.getId()).append("' class='btn-del' onclick=\"return confirm('¿Eliminar este material?');\">🗑️</a>");
                         }
                         sb.append("        </div>");
                         sb.append("      </div>");
@@ -900,7 +856,7 @@ public class App {
                 }
                 sb.append("    </div>");
 
-                // Compartimento 2: Tareas Desarrolladas
+                // Compartimento 2: Tareas
                 sb.append("    <div class='compartment'>");
                 sb.append("      <div class='compartment-header'>");
                 sb.append("        <div class='comp-title comp-tar'>📝 Tareas & Prácticas Desarrolladas</div>");
@@ -920,12 +876,13 @@ public class App {
                         for (Archivo arc : archs) {
                             String url = "/archivos/descargar/" + arc.getId();
                             sb.append("          <a href='").append(url).append("' class='btn-down' style='border-color:#ff007f; color:#ff66b2;' target='_blank'>📥 Descargar Tarea</a>");
+                            // Si la tarea es PDF, también tendrá su botón de Ver PDF
                             if (arc.getNombreOriginal() != null && arc.getNombreOriginal().toLowerCase().endsWith(".pdf")) {
                                 sb.append("          <button class='btn-view' onclick=\"openPdfModal('").append(url).append("', '").append(arc.getNombreOriginal()).append("')\">👁️ Ver PDF</button>");
                             }
                         }
                         if (esAdmin) {
-                            sb.append("          <a href='/archivos/eliminar/").append(c.getId()).append("' class='btn-del' onclick=\"return confirm('¿Eliminar esta tarea de MySQL?');\">🗑️</a>");
+                            sb.append("          <a href='/archivos/eliminar/").append(c.getId()).append("' class='btn-del' onclick=\"return confirm('¿Eliminar esta tarea?');\">🗑️</a>");
                         }
                         sb.append("        </div>");
                         sb.append("      </div>");
@@ -939,12 +896,11 @@ public class App {
         }
 
         // =======================================================
-        // TAB 03: CONTACTO & REDES (SIN FALSO QR NI CÓDIGO DE BARRAS)
+        // TAB 03: CONTACTO
         // =======================================================
         if ("contacto".equals(activeTab)) {
             sb.append("<div class='contact-hub-grid'>");
 
-            // Carnet Estudiantil Holográfico Oficial de Flor (Limpio y Elegante)
             sb.append("  <div>");
             sb.append("    <div class='student-id-card'>");
             sb.append("      <div class='id-header'>");
@@ -976,7 +932,6 @@ public class App {
             sb.append("        🏛️ <b>Pabellón:</b> Facultad de Ingeniería • EPISC.");
             sb.append("      </div>");
 
-            // Sello de Certificación Digital (Sin falso QR)
             sb.append("      <div class='digital-cert-seal'>");
             sb.append("        <div style='font-family:\"Fira Code\",monospace; font-size:11.5px; font-weight:800; color:#00f3ff;'>🛡️ ACREDITACIÓN DIGITAL UNIVERSITARIA // EPISC UPLA</div>");
             sb.append("        <div style='font-family:\"Fira Code\",monospace; font-size:9.5px; color:#d884ff; margin-top:4px;'>FIRMA CRIPTOGRÁFICA VERIFICADA • HASH SHA-256: 332181-UPLA-2026</div>");
@@ -984,7 +939,6 @@ public class App {
             sb.append("    </div>");
             sb.append("  </div>");
 
-            // Enlaces de Comunicación Institucional
             sb.append("  <div>");
             sb.append("    <div class='cyber-card'>");
             sb.append("      <span class='neon-sub'>// COMUNICACIÓN DIRECTA & CÁTEDRA</span>");
@@ -992,7 +946,6 @@ public class App {
             
             sb.append("      <div class='contact-links-grid'>");
 
-            // Correo Institucional de Flor
             sb.append("        <a href='mailto:s01269h@upla.edu.pe' class='social-card'>");
             sb.append("          <div class='social-head'>");
             sb.append("            <div class='social-icon' style='color:#00f3ff;'>✉️</div>");
@@ -1002,27 +955,24 @@ public class App {
             sb.append("          <div class='social-action'>Abrir Correo ➔</div>");
             sb.append("        </a>");
 
-            // Correo del Ingeniero Docente
             sb.append("        <a href='mailto:d.rfernandezb@ms.upla.edu.pe' class='social-card'>");
             sb.append("          <div class='social-head'>");
-            sb.append("            <div class='social-icon' style='color:#d884ff;'>👨🏫</div>");
+            sb.append("            <div class='social-icon' style='color:#d884ff;'>👨‍🏫</div>");
             sb.append("            <div><div class='social-title'>Docente de Cátedra</div><div class='social-tag'>Mg. Raúl Fernández</div></div>");
             sb.append("          </div>");
             sb.append("          <div class='social-desc'>Correo de contacto del docente: <b>d.rfernandezb@ms.upla.edu.pe</b>.</div>");
             sb.append("          <div class='social-action'>Contactar Docente ➔</div>");
             sb.append("        </a>");
 
-            // Repositorio Académico
             sb.append("        <a href='https://github.com' target='_blank' class='social-card'>");
             sb.append("          <div class='social-head'>");
             sb.append("            <div class='social-icon'>🐙</div>");
             sb.append("            <div><div class='social-title'>GitHub Académico</div><div class='social-tag'>Control de Versiones</div></div>");
             sb.append("          </div>");
-            sb.append("          <div class='social-desc'>Repositorio de código fuente en Java 21, Spring Boot y MySQL.</div>");
+            sb.append("          <div class='social-desc'>Repositorio de código fuente en Java 21, Spring Boot y H2/MySQL.</div>");
             sb.append("          <div class='social-action'>Ver Repositorio ➔</div>");
             sb.append("        </a>");
 
-            // Ubicación del Campus Huancayo
             sb.append("        <div class='social-card'>");
             sb.append("          <div class='social-head'>");
             sb.append("            <div class='social-icon' style='color:#00ff88;'>📍</div>");
@@ -1034,7 +984,6 @@ public class App {
 
             sb.append("      </div>");
 
-            // Buzón Directo
             sb.append("      <div style='margin-top:24px; padding-top:20px; border-top:1px dashed rgba(216,132,255,0.25);'>");
             sb.append("        <span class='neon-sub'>// TRANSMISIÓN DIRECTA AL BUZÓN INSTITUCIONAL</span>");
             sb.append("        <form action='/contacto/enviar' method='POST' style='margin-top:12px; display:flex; gap:10px;'>");
@@ -1051,61 +1000,42 @@ public class App {
 
         sb.append("</main>");
 
-        // ==========================================================
-        // ANIMALITO COMPLETO: MICHI 🐱🐾
-        // ==========================================================
+        // Animalito Michi
         sb.append("<div id='cyberCatContainer' onclick='toggleMichi()'>");
         sb.append("  <div class='cat-bubble'>🐾 ¡Miau! ¿Tienes dudas? ¡Tócame!</div>");
         sb.append("  <svg class='cat-sprite' viewBox='0 0 100 90' fill='none' xmlns='http://www.w3.org/2000/svg'>");
-        sb.append("    <path class='cat-tail' d='M 30 65 Q 10 50 15 35 Q 20 20 10 15 Q 5 25 10 40 Q 15 60 30 70 Z' fill='url(#catGrad)' stroke='#00f3ff' stroke-width='1.5'/>");
-        sb.append("    <ellipse class='cat-paw-back' cx='35' cy='74' rx='10' ry='6' fill='#d884ff' stroke='#ff007f' stroke-width='1.5'/>");
-        sb.append("    <ellipse class='cat-paw-back' cx='68' cy='74' rx='10' ry='6' fill='#d884ff' stroke='#ff007f' stroke-width='1.5'/>");
+        sb.append("    <path d='M 30 65 Q 10 50 15 35 Q 20 20 10 15 Q 5 25 10 40 Q 15 60 30 70 Z' fill='url(#catGrad)' stroke='#00f3ff' stroke-width='1.5'/>");
+        sb.append("    <ellipse cx='35' cy='74' rx='10' ry='6' fill='#d884ff' stroke='#ff007f' stroke-width='1.5'/>");
+        sb.append("    <ellipse cx='68' cy='74' rx='10' ry='6' fill='#d884ff' stroke='#ff007f' stroke-width='1.5'/>");
         sb.append("    <ellipse cx='50' cy='58' rx='28' ry='22' fill='url(#catGrad)' stroke='#d884ff' stroke-width='2'/>");
         sb.append("    <path d='M 32 46 Q 50 56 68 46' stroke='#ff007f' stroke-width='3' stroke-linecap='round'/>");
-        sb.append("    <circle cx='50' cy='52' r='4' fill='#00f3ff' filter='drop-shadow(0 0 5px #00f3ff)'/>");
-        sb.append("    <g class='cat-ear-left'>");
-        sb.append("      <polygon points='30,30 22,8 42,20' fill='url(#catGrad)' stroke='#ff007f' stroke-width='1.5'/>");
-        sb.append("      <polygon points='31,27 26,13 39,21' fill='#ff80df'/>");
-        sb.append("    </g>");
-        sb.append("    <g class='cat-ear-right'>");
-        sb.append("      <polygon points='70,30 78,8 58,20' fill='url(#catGrad)' stroke='#ff007f' stroke-width='1.5'/>");
-        sb.append("      <polygon points='69,27 74,13 61,21' fill='#ff80df'/>");
-        sb.append("    </g>");
+        sb.append("    <circle cx='50' cy='52' r='4' fill='#00f3ff'/>");
+        sb.append("    <polygon points='30,30 22,8 42,20' fill='url(#catGrad)' stroke='#ff007f' stroke-width='1.5'/>");
+        sb.append("    <polygon points='70,30 78,8 58,20' fill='url(#catGrad)' stroke='#ff007f' stroke-width='1.5'/>");
         sb.append("    <circle cx='50' cy='32' r='22' fill='url(#catGrad)' stroke='#d884ff' stroke-width='2'/>");
-        sb.append("    <g class='cat-eye'>");
-        sb.append("      <ellipse cx='42' cy='30' rx='4.5' ry='6' fill='#00f3ff' filter='drop-shadow(0 0 6px #00f3ff)'/>");
-        sb.append("      <ellipse cx='58' cy='30' rx='4.5' ry='6' fill='#00f3ff' filter='drop-shadow(0 0 6px #00f3ff)'/>");
-        sb.append("      <circle cx='43.5' cy='28.5' r='1.8' fill='#fff'/>");
-        sb.append("      <circle cx='59.5' cy='28.5' r='1.8' fill='#fff'/>");
-        sb.append("    </g>");
+        sb.append("    <ellipse cx='42' cy='30' rx='4.5' ry='6' fill='#00f3ff'/>");
+        sb.append("    <ellipse cx='58' cy='30' rx='4.5' ry='6' fill='#00f3ff'/>");
+        sb.append("    <circle cx='43.5' cy='28.5' r='1.8' fill='#fff'/>");
+        sb.append("    <circle cx='59.5' cy='28.5' r='1.8' fill='#fff'/>");
         sb.append("    <polygon points='50,37 47,34 53,34' fill='#ff80df'/>");
         sb.append("    <path d='M 47 38 Q 50 41 53 38' stroke='#fff' stroke-width='1.2' stroke-linecap='round'/>");
         sb.append("    <path d='M 36 34 L 20 31 M 36 37 L 18 38 M 64 34 L 80 31 M 64 37 L 82 38' stroke='#d884ff' stroke-width='1.2' stroke-linecap='round'/>");
-        sb.append("    <ellipse class='cat-paw-front' cx='42' cy='75' rx='7' ry='5' fill='#ff80df' stroke='#fff' stroke-width='1.2'/>");
-        sb.append("    <ellipse class='cat-paw-front' cx='58' cy='75' rx='7' ry='5' fill='#ff80df' stroke='#fff' stroke-width='1.2'/>");
-        sb.append("    <defs>");
-        sb.append("      <linearGradient id='catGrad' x1='0%' y1='0%' x2='100%' y2='100%'>");
-        sb.append("        <stop offset='0%' stop-color='#d884ff'/>");
-        sb.append("        <stop offset='60%' stop-color='#ff007f'/>");
-        sb.append("        <stop offset='100%' stop-color='#3b0754'/>");
-        sb.append("      </linearGradient>");
-        sb.append("    </defs>");
+        sb.append("    <defs><linearGradient id='catGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='#d884ff'/><stop offset='60%' stop-color='#ff007f'/><stop offset='100%' stop-color='#3b0754'/></linearGradient></defs>");
         sb.append("  </svg>");
         sb.append("</div>");
 
-        // Ventana de Chat de MICHI
+        // Michi Ventana
         sb.append("<div id='michiWindow'>");
         sb.append("  <div class='michi-head'>");
         sb.append("    <div class='michi-title'>🐾 MICHI // ASISTENTE DEL PORTAFOLIO</div>");
         sb.append("    <button onclick='toggleMichi()' style='background:transparent; border:none; color:#ff6688; font-size:16px; cursor:pointer; font-weight:900;'>✕</button>");
         sb.append("  </div>");
         sb.append("  <div class='michi-body' id='michiMessages'>");
-        sb.append("    <div class='michi-msg msg-bot'>¡Miau! 🐾 Hola Flor, soy <b>Michi</b>, tu asistente del portafolio.<br><br>Sé <b>TODO</b> sobre este curso: el docente titular Mg. Raúl Fernández, tus datos como autora, las 16 semanas, el sílabo, la persistencia en MySQL 8.0 y el despliegue en la nube. ¿Qué deseas consultar?</div>");
+        sb.append("    <div class='michi-msg msg-bot'>¡Miau! 🐾 Hola Flor, soy <b>Michi</b>, tu asistente del portafolio.<br><br>Sé <b>TODO</b> sobre este curso: el docente titular Mg. Raúl Fernández, tus datos como autora, las 16 semanas, el sílabo y el despliegue en la nube. ¿Qué deseas consultar?</div>");
         sb.append("  </div>");
         sb.append("  <div class='michi-chips'>");
-        sb.append("    <div class='m-chip' onclick=\"askMichi('¿Quién es el docente?')\">👨🏫 El Ingeniero Docente</div>");
+        sb.append("    <div class='m-chip' onclick=\"askMichi('¿Quién es el docente?')\">👨‍🏫 El Ingeniero Docente</div>");
         sb.append("    <div class='m-chip' onclick=\"askMichi('¿Quién es la autora?')\">🌸 Alumna Titular</div>");
-        sb.append("    <div class='m-chip' onclick=\"askMichi('¿Cómo sé si se guardó en MySQL?')\">🗄️ ¿Se guardó en MySQL?</div>");
         sb.append("    <div class='m-chip' onclick=\"askMichi('¿Qué vemos en Semana 4?')\">📐 Semana 4 (Vistas 4+1)</div>");
         sb.append("    <div class='m-chip' onclick=\"askMichi('¿Qué es la sumilla del curso?')\">📖 Sumilla del Sílabo</div>");
         sb.append("  </div>");
@@ -1115,14 +1045,14 @@ public class App {
         sb.append("  </div>");
         sb.append("</div>");
 
-        // Modal PDF
+        // Modal PDF (Visor en pantalla)
         sb.append("<div id='pdfModal' class='cyber-modal' style='display:none;'>");
         sb.append("  <div class='modal-dialog'>");
         sb.append("    <div class='modal-header'>");
         sb.append("      <div class='modal-title' id='pdfTitle'>DOCUMENTO ACADÉMICO</div>");
         sb.append("      <button class='modal-close' onclick=\"document.getElementById('pdfModal').style.display='none';\">CERRAR [X]</button>");
         sb.append("    </div>");
-        sb.append("    <iframe id='pdfFrame' src='' style='width:100%; height:70vh; border:none; border-radius:14px; background:#fff;'></iframe>");
+        sb.append("    <iframe id='pdfFrame' src='' style='width:100%; height:72vh; border:none; border-radius:14px; background:#fff;'></iframe>");
         sb.append("  </div>");
         sb.append("</div>");
 
@@ -1137,13 +1067,13 @@ public class App {
             sb.append("    <form action='/perfil/actualizar' method='POST'>");
             sb.append("      <label style='font-size:11.5px; font-family:\"Fira Code\",monospace; color:#d884ff; display:block; margin-bottom:6px; font-weight:700;'>NOMBRE COMPLETO:</label>");
             sb.append("      <input type='text' name='nombre' class='cyber-input' value='").append(nombreAlumna).append("' required>");
-            sb.append("      <button type='submit' class='submit-btn' style='margin-top:14px;'>GUARDAR EN MYSQL</button>");
+            sb.append("      <button type='submit' class='submit-btn' style='margin-top:14px;'>GUARDAR CAMBIOS</button>");
             sb.append("    </form>");
             sb.append("  </div>");
             sb.append("</div>");
         }
 
-        // Scripts interactivos
+        // JavaScript interactivo
         sb.append("<script>");
         sb.append("  let curWeek = 1;");
         sb.append("  function selectWeek(n) {");
@@ -1156,7 +1086,6 @@ public class App {
         sb.append("    if(pill) { pill.classList.add('active-pill'); pill.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' }); }");
         sb.append("    const status = document.getElementById('carouselStatus');");
         sb.append("    if(status) status.innerText = 'NAVEGANDO SEMANA ' + (n < 10 ? '0' + n : n) + ' DE 16';");
-        // AQUÍ: Llena el campo de texto libre con el número de semana si haces clic en el carrusel
         sb.append("    const inp = document.getElementById('formSemanaInput');");
         sb.append("    if(inp) inp.value = n;");
         sb.append("  }");
@@ -1167,7 +1096,7 @@ public class App {
         sb.append("    selectWeek(next);");
         sb.append("  }");
 
-        // Lógica de Michi
+        // Lógica Michi
         sb.append("  function toggleMichi() {");
         sb.append("    const w = document.getElementById('michiWindow');");
         sb.append("    w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';");
@@ -1186,18 +1115,12 @@ public class App {
         sb.append("    input.value = '';");
         sb.append("    box.scrollTop = box.scrollHeight;");
         sb.append("    setTimeout(() => {");
-        sb.append("      let resp = '¡Miau! 🐾 No tengo esa consulta exacta, pero puedes revisar las 16 semanas en el carrusel o consultar el correo institucional de Flor.';");
+        sb.append("      let resp = '¡Miau! 🐾 No tengo esa consulta exacta, pero puedes revisar las 16 semanas en el carrusel o consultar el correo de Flor.';");
         sb.append("      const t = text.toLowerCase();");
         sb.append("      if(t.includes('docente') || t.includes('profesor') || t.includes('raul') || t.includes('raúl') || t.includes('ing')) {");
-        sb.append("        resp = '👨🏫 El docente titular de la cátedra de Arquitectura de Software es el <b>Mg. Raúl Enrique Fernández Bejarano</b>. Su correo oficial es <b>d.rfernandezb@ms.upla.edu.pe</b> y el semestre va del 06 de Abril al 26 de Julio de 2026.';");
+        sb.append("        resp = '👨‍🏫 El docente titular de la cátedra es el <b>Mg. Raúl Enrique Fernández Bejarano</b>. Su correo oficial es <b>d.rfernandezb@ms.upla.edu.pe</b> y el semestre va del 06 de Abril al 26 de Julio de 2026.';");
         sb.append("      } else if(t.includes('autora') || t.includes('flor') || t.includes('estudiante') || t.includes('quién es') || t.includes('creadora')) {");
         sb.append("        resp = '🌸 La autora y titular de este portafolio es <b>Flor Xiomara Medina Salazar</b>, estudiante de la Escuela Profesional de Ingeniería de Sistemas y Computación (EPISC - UPLA). Correo: <b>s01269h@upla.edu.pe</b>.';");
-        sb.append("      } else if(t.includes('mysql') || t.includes('base de datos') || t.includes('guardar') || t.includes('guardo')) {");
-        sb.append("        resp = '🗄️ <b>¿Cómo sabemos que se guarda en MySQL?</b><br>¡Miau! Cada vez que subes un archivo o clase, Spring Data JPA ejecuta un <code>INSERT INTO clases</code> y <code>INSERT INTO archivos</code> en MySQL 8.0 (InnoDB). Puedes ver el contador en vivo en el encabezado superior o abrir MySQL Workbench y correr <code>SELECT * FROM clases;</code>.';");
-        sb.append("      } else if(t.includes('github') || t.includes('git')) {");
-        sb.append("        resp = '🐙 <b>¿Cómo subir a GitHub?</b><br>1. Abre tu terminal en la carpeta del proyecto.<br>2. Ejecuta <code>git init</code>, luego <code>git add .</code>.<br>3. Haz el commit: <code>git commit -m \"Subiendo portafolio 2026-I\"</code>.<br>4. Conecta tu repositorio remoto con <code>git remote add origin https://github.com/TU_USUARIO/TU_REPO.git</code>.<br>5. Envía tus cambios con <code>git push -u origin main</code>.';");
-        sb.append("      } else if(t.includes('azure') || t.includes('nube') || t.includes('ansure')) {");
-        sb.append("        resp = '☁️ <b>¿Cómo desplegar en Microsoft Azure?</b><br>1. Empaqueta tu aplicación con <code>mvn clean package</code> para generar el archivo <code>.jar</code>.<br>2. En el portal de Azure, crea un recurso de <b>Azure App Service (Java 21)</b>.<br>3. Crea una base de datos <b>Azure Database for MySQL Flexible Server</b> y ajusta las credenciales en <code>application.properties</code>.<br>4. Despliega el JAR directamente desde VS Code con la extensión Azure App Service o usando GitHub Actions.';");
         sb.append("      } else if(t.includes('sumilla') || t.includes('competencia') || t.includes('silabo') || t.includes('sílabo')) {");
         sb.append("        resp = '📖 <b>Sumilla del Curso:</b> Asignatura práctica orientada a formular soluciones arquitectónicas bajo normas IEEE 1471 e ISO/IEC 25010, POO, modelos 4+1 vistas de Kruchten y frameworks empresariales Spring Boot.';");
         sb.append("      } else if(t.includes('semana 4') || t.includes('4+1')) {");
@@ -1206,80 +1129,54 @@ public class App {
         sb.append("        resp = '📧 El correo oficial de Flor Xiomara es <b>s01269h@upla.edu.pe</b> y el del docente es <b>d.rfernandezb@ms.upla.edu.pe</b>.';");
         sb.append("      } else if(t.includes('upla') || t.includes('universidad')) {");
         sb.append("        resp = '🏛️ <b>Universidad Peruana Los Andes (UPLA)</b>, Facultad de Ingeniería, Escuela Profesional de Ingeniería de Sistemas y Computación (EPISC). Campus Chorrillos, Huancayo, Perú.';");
-        sb.append("      } else if(t.includes('tarea') || t.includes('subir')) {");
-        sb.append("        resp = '📝 En la pestaña <b>02. Portafolio Semanal & Tareas</b> puedes subir archivos seleccionando si es <i>Material de Clase</i> o <i>Tarea Desarrollada</i>.';");
         sb.append("      }");
         sb.append("      box.innerHTML += `<div class='michi-msg msg-bot'>${resp}</div>`;");
         sb.append("      box.scrollTop = box.scrollHeight;");
         sb.append("    }, 380);");
         sb.append("  }");
 
-        // PDF Visor
+        // PDF Visor en vivo
         sb.append("  function openPdfModal(url, title) {");
         sb.append("    document.getElementById('pdfTitle').innerText = 'DOCUMENTO: ' + title;");
         sb.append("    document.getElementById('pdfFrame').src = url;");
         sb.append("    document.getElementById('pdfModal').style.display = 'flex';");
         sb.append("  }");
 
-        // Lienzo de Estrellas, Meteoritos y Estela de Cometa en el Cursor (Estrella Fugaz)
+        // Fondo cósmico y estrellas
         sb.append("  const c = document.getElementById('bgCanvas'), cx = c.getContext('2d');");
         sb.append("  let W = c.width = window.innerWidth, H = c.height = window.innerHeight;");
         sb.append("  window.onresize = () => { W = c.width = window.innerWidth; H = c.height = window.innerHeight; };");
         
-        // 110 Estrellas titilantes
         sb.append("  const stars = [];");
         sb.append("  for(let i=0; i<110; i++) {");
         sb.append("    stars.push({ x:Math.random()*W, y:Math.random()*H, r:Math.random()*2+0.8, vx:(Math.random()-0.5)*0.35, vy:(Math.random()-0.5)*0.35, alpha:Math.random(), dAlpha:(Math.random()*0.02+0.005)*(Math.random()>0.5?1:-1) });");
         sb.append("  }");
 
-        // Meteoritos / Estrellas Fugaces periódicos en el cielo
         sb.append("  const meteors = [];");
         sb.append("  function spawnMeteor() {");
-        sb.append("    meteors.push({");
-        sb.append("      x: Math.random()*W*1.2,");
-        sb.append("      y: Math.random()*(H*0.4),");
-        sb.append("      len: Math.random()*130+90,");
-        sb.append("      speed: Math.random()*9+12,");
-        sb.append("      angle: Math.PI/4 + (Math.random()-0.5)*0.2,");
-        sb.append("      life: 1.0,");
-        sb.append("      decay: Math.random()*0.025+0.015,");
-        sb.append("      width: Math.random()*2.8+1.5");
-        sb.append("    });");
+        sb.append("    meteors.push({ x: Math.random()*W*1.2, y: Math.random()*(H*0.4), len: Math.random()*130+90, speed: Math.random()*9+12, angle: Math.PI/4 + (Math.random()-0.5)*0.2, life: 1.0, decay: Math.random()*0.025+0.015, width: Math.random()*2.8+1.5 });");
         sb.append("  }");
         sb.append("  setInterval(() => { if(Math.random()<0.7) spawnMeteor(); }, 1500);");
 
-        // FÍSICA DE ESTRELLA FUGAZ / COMETA EN EL CURSOR DEL MOUSE
         sb.append("  const cometTrail = [];");
         sb.append("  let mouse = { x: -1000, y: -1000 };");
         sb.append("  window.addEventListener('mousemove', (e) => {");
         sb.append("    const dx = e.clientX - mouse.x, dy = e.clientY - mouse.y; const speed = Math.hypot(dx, dy);");
         sb.append("    mouse.x = e.clientX; mouse.y = e.clientY;");
-        sb.append("    const count = Math.min(Math.floor(speed / 3) + 2, 8);");
-        sb.append("    for(let i=0; i<count; i++) {");
-        sb.append("      cometTrail.push({");
-        sb.append("        x: mouse.x + (Math.random() - 0.5) * 6,");
-        sb.append("        y: mouse.y + (Math.random() - 0.5) * 6,");
-        sb.append("        vx: -dx * 0.12 + (Math.random() - 0.5) * 2,");
-        sb.append("        vy: -dy * 0.12 + (Math.random() - 0.5) * 2,");
-        sb.append("        r: Math.random() * 3.5 + 1.2,");
-        sb.append("        alpha: 1,");
-        sb.append("        decay: Math.random() * 0.035 + 0.02,");
-        sb.append("        color: Math.random() > 0.5 ? '#00f3ff' : (Math.random() > 0.5 ? '#ff007f' : '#d884ff')");
-        sb.append("      });");
+        sb.append("    for(let i=0; i<Math.min(Math.floor(speed / 3) + 2, 8); i++) {");
+        sb.append("      cometTrail.push({ x: mouse.x + (Math.random() - 0.5) * 6, y: mouse.y + (Math.random() - 0.5) * 6, vx: -dx * 0.12 + (Math.random() - 0.5) * 2, vy: -dy * 0.12 + (Math.random() - 0.5) * 2, r: Math.random() * 3.5 + 1.2, alpha: 1, decay: Math.random() * 0.035 + 0.02, color: Math.random() > 0.5 ? '#00f3ff' : (Math.random() > 0.5 ? '#ff007f' : '#d884ff') });");
         sb.append("    }");
         sb.append("  });");
 
         sb.append("  function bgLoop() {");
         sb.append("    cx.clearRect(0, 0, W, H);");
-        
-        // Dibujar estrellas de fondo
         sb.append("    for(let i=0; i<stars.length; i++) {");
         sb.append("      let s = stars[i]; s.x += s.vx; s.y += s.vy; s.alpha += s.dAlpha;");
         sb.append("      if(s.alpha<=0.1 || s.alpha>=1) s.dAlpha *= -1;");
         sb.append("      if(s.x<0 || s.x>W) s.vx *= -1; if(s.y<0 || s.y>H) s.vy *= -1;");
         sb.append("      cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI*2); cx.fillStyle = `rgba(216,132,255,${s.alpha*0.85})`; cx.fill();");
         sb.append("      for(let j=i+1; j<stars.length; j++) {");
-        sb.append("        let s2 = stars[j], d = Math.hypot(pX=s.x-s2.x, pY=s.y-s2.y);");
+        sb.append("        let s2 = stars[j], d = Math.hypot(s.x-s2.x, s.y-s2.y);");
         sb.append("        if(d < 105) {");
         sb.append("          cx.beginPath(); cx.moveTo(s.x, s.y); cx.lineTo(s2.x, s2.y);");
         sb.append("          cx.strokeStyle = `rgba(216,132,255,${0.25*(1-d/105)})`; cx.lineWidth = 0.7; cx.stroke();");
@@ -1287,7 +1184,6 @@ public class App {
         sb.append("      }");
         sb.append("    }");
 
-        // Dibujar meteoritos
         sb.append("    for(let i=meteors.length-1; i>=0; i--) {");
         sb.append("      let m = meteors[i];");
         sb.append("      let tailX = m.x - Math.cos(m.angle)*m.len;");
@@ -1302,19 +1198,17 @@ public class App {
         sb.append("      if(m.life <= 0) meteors.splice(i, 1);");
         sb.append("    }");
 
-        // Dibujar estela de estrella fugaz en el ratón
         sb.append("    for(let i=cometTrail.length-1; i>=0; i--) {");
         sb.append("      const p = cometTrail[i]; p.x += p.vx; p.y += p.vy; p.alpha -= p.decay; p.r *= 0.96;");
         sb.append("      if(p.alpha <= 0) { cometTrail.splice(i, 1); continue; }");
         sb.append("      cx.save(); cx.shadowBlur=14; cx.shadowColor=p.color; cx.fillStyle=p.color; cx.globalAlpha=p.alpha;");
         sb.append("      cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, Math.PI*2); cx.fill(); cx.restore();");
         sb.append("    }");
-
         sb.append("    requestAnimationFrame(bgLoop);");
         sb.append("  }");
         sb.append("  bgLoop();");
 
-        // Cuenta del Loader 1-100%
+        // Cuenta Loader
         if (justLoggedIn) {
             sb.append("  let count = 0;");
             sb.append("  const pctEl = document.getElementById('loaderPct');");
@@ -1326,7 +1220,7 @@ public class App {
             sb.append("    count++;");
             sb.append("    pctEl.innerText = (count < 10 ? '00' : (count < 100 ? '0' : '')) + count + '%';");
             sb.append("    fillEl.style.width = count + '%';");
-            sb.append("    if(count === 30) statEl.innerText = 'CONECTANDO DRIVER MYSQL 8.0 INNODB...';");
+            sb.append("    if(count === 30) statEl.innerText = 'CONECTANDO PERSISTENCIA RELACIONAL...';");
             sb.append("    if(count === 65) statEl.innerText = 'CARGANDO 16 SEMANAS Y VISTAS ARQUITECTÓNICAS...';");
             sb.append("    if(count === 90) statEl.innerText = 'INICIALIZANDO MOTOR CIBERNÉTICO DE FLOR XIOMARA...';");
             sb.append("    if(count >= 100) {");
@@ -1348,7 +1242,7 @@ public class App {
     }
 
     // ==========================================================
-    // 3. PERSISTENCIA EN MYSQL (CLASES, TAREAS Y ARCHIVOS)
+    // 3. CONTROLADORES DE ARCHIVOS Y TAREAS
     // ==========================================================
 
     @PostMapping("/clases/crear")
@@ -1363,7 +1257,7 @@ public class App {
             return "redirect:/login";
         }
 
-        // Extracción inteligente de la semana (acepta números o textos como "Semana 3")
+        // Extracción inteligente de la semana
         int semana = 1;
         try {
             String soloNum = semanaStr.replaceAll("[^0-9]", "");
@@ -1380,6 +1274,7 @@ public class App {
 
         if (file != null && !file.isEmpty()) {
             try {
+                Files.createDirectories(this.rootLocation);
                 String originalFilename = file.getOriginalFilename();
                 String serverFilename = UUID.randomUUID().toString() + "_" + originalFilename;
                 Files.copy(file.getInputStream(), this.rootLocation.resolve(serverFilename), StandardCopyOption.REPLACE_EXISTING);
@@ -1402,9 +1297,20 @@ public class App {
                 Path file = rootLocation.resolve(arc.getNombreServidor());
                 Resource resource = new UrlResource(file.toUri());
                 if (resource.exists() || resource.isReadable()) {
+                    // Detección para que el PDF se abra en el visor sin forzar descarga
+                    String contentType = "application/octet-stream";
+                    String nombre = (arc.getNombreOriginal() != null) ? arc.getNombreOriginal().toLowerCase() : "";
+                    if (nombre.endsWith(".pdf")) {
+                        contentType = "application/pdf";
+                    } else if (nombre.endsWith(".png")) {
+                        contentType = "image/png";
+                    } else if (nombre.endsWith(".jpg") || nombre.endsWith(".jpeg")) {
+                        contentType = "image/jpeg";
+                    }
+
                     return ResponseEntity.ok()
                             .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + arc.getNombreOriginal() + "\"")
-                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                            .header(HttpHeaders.CONTENT_TYPE, contentType)
                             .body(resource);
                 }
             } catch (MalformedURLException e) {
