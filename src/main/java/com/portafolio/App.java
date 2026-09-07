@@ -771,7 +771,7 @@ public class App {
         }
 
         // =======================================================
-        // TAB 02: PORTAFOLIO SEMANAL & TAREAS (CARRUSEL 1-16)
+        // TAB 02: PORTAFOLIO SEMANAL & TAREAS (CARRUSEL 1-16 DINÁMICO)
         // =======================================================
         if ("archivos".equals(activeTab)) {
 
@@ -784,16 +784,13 @@ public class App {
                 sb.append("  <form action='/clases/crear' method='POST' enctype='multipart/form-data'>");
                 sb.append("    <div class='form-grid'>");
                 sb.append("      <div>");
-                sb.append("        <label style='font-size:11px; font-family:\"Fira Code\",monospace; color:#d884ff; display:block; margin-bottom:5px; font-weight:700;'>SELECCIONAR SEMANA ACADÉMICA:</label>");
-                sb.append("        <select name='semana' class='cyber-select' id='formSemanaSelect'>");
-                for (int s = 1; s <= 16; s++) {
-                    sb.append("          <option value='").append(s).append("'>Semana ").append(s < 10 ? "0" + s : s).append(": ").append(temasSemanas[s-1]).append("</option>");
-                }
-                sb.append("        </select>");
+                // AQUÍ: Campo de texto libre para que Flor escriba cualquier semana o texto sin restricciones fijas
+                sb.append("        <label style='font-size:11px; font-family:\"Fira Code\",monospace; color:#d884ff; display:block; margin-bottom:5px; font-weight:700;'>SEMANA ACADÉMICA (ESCRIBE EL N° O TEXTO):</label>");
+                sb.append("        <input type='text' name='semana' id='formSemanaInput' class='cyber-input' placeholder='Escribe la semana (Ej: 1, 2, 3 o Semana 1)' value='1' required>");
                 sb.append("      </div>");
                 sb.append("      <div>");
-                sb.append("        <label style='font-size:11px; font-family:\"Fira Code\",monospace; color:#d884ff; display:block; margin-bottom:5px; font-weight:700;'>TÍTULO DEL DOCUMENTO / TAREA:</label>");
-                sb.append("        <input type='text' name='titulo' class='cyber-input' placeholder='Ej: Tarea Desarrollada de Vistas 4+1' required>");
+                sb.append("        <label style='font-size:11px; font-family:\"Fira Code\",monospace; color:#d884ff; display:block; margin-bottom:5px; font-weight:700;'>TÍTULO DEL TEMA / TAREA SEGÚN EL DOCENTE:</label>");
+                sb.append("        <input type='text' name='titulo' class='cyber-input' placeholder='Escribe el tema o título que dictó el Ingeniero...' required>");
                 sb.append("      </div>");
                 sb.append("    </div>");
 
@@ -835,18 +832,24 @@ public class App {
             }
             sb.append("</div>");
 
-            // Paneles de Semanas con doble compartimento
+            // Paneles de Semanas con doble compartimento y Títulos Adaptables
             for (int s = 1; s <= 16; s++) {
                 final int currentWeek = s;
                 List<Clase> clasesSemana = todasLasClases.stream()
                         .filter(c -> Objects.equals(c.getSemanaId(), currentWeek))
                         .collect(Collectors.toList());
 
+                // Si Flor subió un tema propio para esta semana, mostramos el tema que ella escribió!
+                String tituloSemana = (s <= temasSemanas.length) ? temasSemanas[s-1] : "Semana " + s;
+                if (!clasesSemana.isEmpty() && clasesSemana.get(0).getTitulo() != null && !clasesSemana.get(0).getTitulo().trim().isEmpty()) {
+                    tituloSemana = clasesSemana.get(0).getTitulo();
+                }
+
                 sb.append("<div class='week-card ").append(s == 1 ? "active-week" : "").append("' id='week-card-").append(s).append("'>");
                 sb.append("  <div class='week-card-header'>");
                 sb.append("    <div>");
                 sb.append("      <span class='week-badge-lg'>SEMANA ").append(s < 10 ? "0" + s : s).append(" DE 16</span>");
-                sb.append("      <h2 class='week-card-title'>").append(temasSemanas[s-1]).append("</h2>");
+                sb.append("      <h2 class='week-card-title'>").append(tituloSemana).append("</h2>");
                 sb.append("    </div>");
                 sb.append("  </div>");
 
@@ -1002,7 +1005,7 @@ public class App {
             // Correo del Ingeniero Docente
             sb.append("        <a href='mailto:d.rfernandezb@ms.upla.edu.pe' class='social-card'>");
             sb.append("          <div class='social-head'>");
-            sb.append("            <div class='social-icon' style='color:#d884ff;'>👨‍🏫</div>");
+            sb.append("            <div class='social-icon' style='color:#d884ff;'>👨🏫</div>");
             sb.append("            <div><div class='social-title'>Docente de Cátedra</div><div class='social-tag'>Mg. Raúl Fernández</div></div>");
             sb.append("          </div>");
             sb.append("          <div class='social-desc'>Correo de contacto del docente: <b>d.rfernandezb@ms.upla.edu.pe</b>.</div>");
@@ -1100,7 +1103,7 @@ public class App {
         sb.append("    <div class='michi-msg msg-bot'>¡Miau! 🐾 Hola Flor, soy <b>Michi</b>, tu asistente del portafolio.<br><br>Sé <b>TODO</b> sobre este curso: el docente titular Mg. Raúl Fernández, tus datos como autora, las 16 semanas, el sílabo, la persistencia en MySQL 8.0 y el despliegue en la nube. ¿Qué deseas consultar?</div>");
         sb.append("  </div>");
         sb.append("  <div class='michi-chips'>");
-        sb.append("    <div class='m-chip' onclick=\"askMichi('¿Quién es el docente?')\">👨‍🏫 El Ingeniero Docente</div>");
+        sb.append("    <div class='m-chip' onclick=\"askMichi('¿Quién es el docente?')\">👨🏫 El Ingeniero Docente</div>");
         sb.append("    <div class='m-chip' onclick=\"askMichi('¿Quién es la autora?')\">🌸 Alumna Titular</div>");
         sb.append("    <div class='m-chip' onclick=\"askMichi('¿Cómo sé si se guardó en MySQL?')\">🗄️ ¿Se guardó en MySQL?</div>");
         sb.append("    <div class='m-chip' onclick=\"askMichi('¿Qué vemos en Semana 4?')\">📐 Semana 4 (Vistas 4+1)</div>");
@@ -1153,8 +1156,9 @@ public class App {
         sb.append("    if(pill) { pill.classList.add('active-pill'); pill.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' }); }");
         sb.append("    const status = document.getElementById('carouselStatus');");
         sb.append("    if(status) status.innerText = 'NAVEGANDO SEMANA ' + (n < 10 ? '0' + n : n) + ' DE 16';");
-        sb.append("    const sel = document.getElementById('formSemanaSelect');");
-        sb.append("    if(sel) sel.value = n;");
+        // AQUÍ: Llena el campo de texto libre con el número de semana si haces clic en el carrusel
+        sb.append("    const inp = document.getElementById('formSemanaInput');");
+        sb.append("    if(inp) inp.value = n;");
         sb.append("  }");
         sb.append("  function changeWeek(d) {");
         sb.append("    let next = curWeek + d;");
@@ -1185,7 +1189,7 @@ public class App {
         sb.append("      let resp = '¡Miau! 🐾 No tengo esa consulta exacta, pero puedes revisar las 16 semanas en el carrusel o consultar el correo institucional de Flor.';");
         sb.append("      const t = text.toLowerCase();");
         sb.append("      if(t.includes('docente') || t.includes('profesor') || t.includes('raul') || t.includes('raúl') || t.includes('ing')) {");
-        sb.append("        resp = '👨‍🏫 El docente titular de la cátedra de Arquitectura de Software es el <b>Mg. Raúl Enrique Fernández Bejarano</b>. Su correo oficial es <b>d.rfernandezb@ms.upla.edu.pe</b> y el semestre va del 06 de Abril al 26 de Julio de 2026.';");
+        sb.append("        resp = '👨🏫 El docente titular de la cátedra de Arquitectura de Software es el <b>Mg. Raúl Enrique Fernández Bejarano</b>. Su correo oficial es <b>d.rfernandezb@ms.upla.edu.pe</b> y el semestre va del 06 de Abril al 26 de Julio de 2026.';");
         sb.append("      } else if(t.includes('autora') || t.includes('flor') || t.includes('estudiante') || t.includes('quién es') || t.includes('creadora')) {");
         sb.append("        resp = '🌸 La autora y titular de este portafolio es <b>Flor Xiomara Medina Salazar</b>, estudiante de la Escuela Profesional de Ingeniería de Sistemas y Computación (EPISC - UPLA). Correo: <b>s01269h@upla.edu.pe</b>.';");
         sb.append("      } else if(t.includes('mysql') || t.includes('base de datos') || t.includes('guardar') || t.includes('guardo')) {");
@@ -1348,7 +1352,7 @@ public class App {
     // ==========================================================
 
     @PostMapping("/clases/crear")
-    public String crearClase(@RequestParam("semana") Integer semana,
+    public String crearClase(@RequestParam("semana") String semanaStr,
                              @RequestParam("titulo") String titulo,
                              @RequestParam("descripcion") String descripcion,
                              @RequestParam("tipo") String tipo,
@@ -1357,6 +1361,17 @@ public class App {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         if (usuario == null || !usuario.esAdmin()) {
             return "redirect:/login";
+        }
+
+        // Extracción inteligente de la semana (acepta números o textos como "Semana 3")
+        int semana = 1;
+        try {
+            String soloNum = semanaStr.replaceAll("[^0-9]", "");
+            if (!soloNum.isEmpty()) {
+                semana = Integer.parseInt(soloNum);
+            }
+        } catch (Exception ignored) {
+            semana = 1;
         }
 
         String fecha = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date());
